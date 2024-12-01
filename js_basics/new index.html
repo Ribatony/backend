@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Data Handling</title>
+    <style>
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif ;
+            background-color: #15004e;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: beige;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .error {
+            color: rgba(17, 0, 255, 0.349);
+            font-size: 0.9em;
+        }
+
+        .summary {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: aquamarine;
+            border-radius: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form id="registrationForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <span class="error" id="nameError"></span>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            <span class="error" id="emailError"></span>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+            <span class="error" id="passwordError"></span>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" required>
+            <span class="error" id="confirmPasswordError"></span>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" required>
+            <span class="error" id="ageError"></span>
+
+            <label for="preferredContact">Preferred Contact Method:</label>
+            <select id="preferredContact" required>
+                <option value="">Select a contact method</option>
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
+                <option value="Mail">Mail</option>
+            </select>
+            <span class="error" id="contactError"></span>
+
+            <label>
+                <input type="checkbox" id="terms" required> I accept the Terms and Conditions
+            </label>
+            <span class="error" id="termsError"></span>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="summary hidden" id="formSummary">
+            <h2>Form Summary</h2>
+            <p><strong>Name:</strong> <span id="summaryName"></span></p>
+            <p><strong>Email:</strong> <span id="summaryEmail"></span></p>
+            <p><strong>Password:</strong> <span id="summaryPassword"></span></p>
+            <p><strong>Age:</strong> <span id="summaryAge"></span></p>
+            <p><strong>Preferred Contact Method:</strong> <span id="summaryContact"></span></p>
+            <p><strong>Terms Accepted:</strong> <span id="summaryTerms"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to display error messages
+        function showError(element, message) {
+            element.textContent = message;
+        }
+
+        // Function to clear error messages
+        function clearError(element) {
+            element.textContent = '';
+        }
+
+        // Function to capture form data
+        function captureFormData() {
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                age: document.getElementById('age').value,
+                preferredContact: document.getElementById('preferredContact').value,
+                termsAccepted: document.getElementById('terms').checked
+            };
+            return formData;
+        }
+
+        // Function to validate form data
+        function validateFormData(formData) {
+            let isValid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error').forEach(error => clearError(error));
+
+            // Validate Name
+            if (formData.name.trim() === '') {
+                showError(document.getElementById('nameError'), 'Name is required.');
+                isValid = false;
+            }
+
+            // Validate Email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                showError(document.getElementById('emailError'), 'Please enter a valid email address.');
+                isValid = false;
+            }
+
+            // Validate Password
+            if (formData.password.length < 8) {
+                showError(document.getElementById('passwordError'), 'Password must be at least 8 characters long.');
+                isValid = false;
+            }
+
+            // Validate Confirm Password
+            if (formData.password !== formData.confirmPassword) {
+                showError(document.getElementById('confirmPasswordError'), 'Passwords do not match.');
+                isValid = false;
+            }
+
+            // Validate Age
+            if (isNaN(formData.age) || formData.age < 18 || formData.age > 100) {
+                showError(document.getElementById('ageError'), 'Please enter a valid age between 18 and 100.');
+                isValid = false;
+            }
+
+            // Validate Preferred Contact Method
+            if (formData.preferredContact === '') {
+                showError(document.getElementById('contactError'), 'Please select a preferred contact method.');
+                isValid = false;
+            }
+
+            // Validate Terms and Conditions
+            if (!formData.termsAccepted) {
+                showError(document.getElementById('termsError'), 'You must accept the Terms and Conditions.');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Function to display form data
+        function displayFormData(formData) {
+            document.getElementById('summaryName').textContent = formData.name;
+            document.getElementById('summaryEmail').textContent = formData.email;
+            document.getElementById('summaryPassword').textContent = formData.password;
+            document.getElementById('summaryAge').textContent = formData.age;
+            document.getElementById('summaryContact').textContent = formData.preferredContact;
+            document.getElementById('summaryTerms').textContent = formData.termsAccepted ? 'Yes' : 'No';
+            document.getElementById('formSummary').classList.remove('hidden');
+        }
+
+        // Event listener for form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = captureFormData();
+            const isValid = validateFormData(formData);
+
+            if (isValid) {
+                alert('Form submitted successfully!');
+                displayFormData(formData);
+            }
+        });
+
+        // Real-time feedback for email field
+        document.getElementById('email').addEventListener('input', function() {
+            const email = this.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError(document.getElementById('emailError'), 'Invalid email format.');
+            } else {
+                clearError(document.getElementById('emailError'));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation Exercise</title>
+    <style>
+      body{
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        margin: 0;
+        padding: 0cap;
+        box-sizing: border-box;
+      .container{
+        max: width 600px;
+        margin: 20px auto ;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border: radius 10px; 
+        box-shadow: 0dvi;
+      }
+      h2 {
+        text-align: center;
+        color: aquamarine;
+      }
+      form {
+        display: flexbox;
+        flex-direction: column;
+      }
+      label{
+        margin-top: auto;
+        color: cadetblue;
+      }
+      imput,select,button{
+        padding: 40px;
+        margin-top: auto;
+        border-radius: 5px;
+        border:1px salmon #ccc;
+        font-size: medium;
+      }
+      button {
+        background-color: chocolate;
+        color: #fff;
+        border:none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: antiquewhite;
+      }
+      .error{
+        color: rgb(129, 27, 27);
+        font-size: 0.9em;
+      }
+      @media(max-width:768px) {
+        .container{
+          width: 90%;
+         }
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+     <h2>Registration Form</h2> 
+     <form id="registrationForm">
+       <label for="name">Name:</label>
+        <input type="text" id="name" required>
+         <span class="error" id="nameError"></span>
+         
+         <label for="email">Email:</label>
+          <input type="email" id="email" required>
+           <span class="error" id="emailError"></span> 
+           
+           <label for="password">Password:</label> 
+           <input type="password" id="password" required>
+            <span class="error" id="passwordError"></span> 
+            
+            
+            <label for="confirmPassword">Confirm Password:</label> 
+            <input type="password" id="confirmPassword" required>
+             <span class="error" id="confirmPasswordError"></span>
+             
+             <label for="age">Age:</label> 
+             <input type="number" id="age" required> 
+             <span class="error" id="ageError"></span>
+             
+             <label>Gender:</label> 
+             <input type="radio" name="gender" value="male" required> Male <input type="radio" name="gender" value="female" required> Female
+              <span class="error" id="genderError"></span> 
+              
+              <label for="country">Country:</label>
+               <select id="country" required> 
+                <option value="">Select your country</option>
+                 <option value="USA">USA</option>
+                  <option value="Canada">Canada</option>
+                   <option value="UK">UK</option>
+                    <option value="Australia">Australia</option>
+              </select>
+                    <span class="error" id="countryError"></span>
+  
+                    <label>
+                       <input type="checkbox" id="terms" required> I agree to the Terms and Conditions </label>
+                        <span class="error" id="termsError"></span>
+                        
+                        <button type="submit">Register</button> 
+                      </form>
+                  </div>
+                  <div class="container">
+                    <h2>Login Form</h2>
+                    <form id="loginForm">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" required>
+                        <span class="error" id="loginEmailError"></span>
+            
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" required>
+                        <span class="error" id="loginPasswordError"></span>
+            
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+            
+                <script>
+                    // Function to display error messages
+                    function showError(element, message) {
+                        element.textContent = message;
+                    }
+            
+                    // Registration form validation
+                    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+                        event.preventDefault();
+            
+                        let isValid = true;
+            
+                        // Clear previous error messages
+                        document.querySelectorAll('.error').forEach(function(error) {
+                            error.textContent = '';
+                        });
+            
+                        // Validate Name
+                        const name = document.getElementById('name');
+                        if (name.value.trim() === '') {
+                            showError(document.getElementById('nameError'), 'Name is required.');
+                            isValid = false;
+                        }
+            
+                        // Validate Email
+                        const email = document.getElementById('email');
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email.value)) {
+                            showError(document.getElementById('emailError'), 'Please enter a valid email address.');
+                            isValid = false;
+                        }
+            
+                        // Validate Password
+                        const password = document.getElementById('password');
+                        if (password.value.length < 8) {
+                            showError(document.getElementById('passwordError'), 'Password must be at least 8 characters long.');
+                            isValid = false;
+                        }
+            
+                        // Validate Confirm Password
+                        const confirmPassword = document.getElementById('confirmPassword');
+                        if (password.value !== confirmPassword.value) {
+                            showError(document.getElementById('confirmPasswordError'), 'Passwords do not match.');
+                            isValid = false;
+                        }
+            
+                        // Validate Age
+                        const age = document.getElementById('age');
+                        if (isNaN(age.value) || age.value < 18 || age.value > 100) {
+                            showError(document.getElementById('ageError'), 'Please enter a valid age between 18 and 100.');
+                            isValid = false;
+                        }
+            
+                        // Validate Gender
+                        const gender = document.querySelector('input[name="gender"]:checked');
+                        if (!gender) {
+                            showError(document.getElementById('genderError'), 'Please select your gender.');
+                            isValid = false;
+                        }
+            
+                        // Validate Country
+                        const country = document.getElementById('country');
+                        if (country.value === '') {
+                            showError(document.getElementById('countryError'), 'Please select your country.');
+                            isValid = false;
+                        }
+            
+                        // Validate Terms and Conditions
+                        const terms = document.getElementById('terms');
+                        if (!terms.checked) {
+                            showError(document.getElementById('termsError'), 'You must agree to the Terms and Conditions.');
+                            isValid = false;
+                        }
+            
+                        if (isValid) {
+                            alert('Registration successful!');
+                            // Submit the form or do further processing
+                        }
+                    });
+            
+                    // Login form validation
+                    document.getElementById('loginForm').addEventListener('submit', function(event) {
+                        event.preventDefault();
+            
+                        let isValid = true;
+            
+                        // Clear previous error messages
+                        document.querySelectorAll('.error').forEach(function(error) {
+                            error.textContent = '';
+                        });
+            
+                        // Validate Email
+                        const loginEmail = document.getElementById('loginEmail');
+                        if (loginEmail.value.trim() === '') {
+                            showError(document.getElementById('loginEmailError'), 'Email is required.');
+                            isValid = false;
+                        }
+            
+                        // Validate Password
+                        const loginPassword = document.getElementById('loginPassword');
+                        if (loginPassword.value.trim() === '') {
+                            showError(document.getElementById('loginPasswordError'), 'Password is required.');
+                            isValid = false;
+                        }
+            
+                        if (isValid) {
+                            alert('Login successful!');
+                            // Submit the form or do further processing
+                        }
+                    });
+                </script>
+            </body>
+            </html>
+                     
